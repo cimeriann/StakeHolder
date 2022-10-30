@@ -12,14 +12,15 @@ contract StakeHolder {
     address public immutable contractOwner;
     uint256 constant public StakingPeriod = 365;
     // keep track of the number of days that have passed since staking began
-    uint256 public numberOfDaysSinceStakingBegan;
+    // uint256 public numberOfDaysSinceStakingBegan;
     uint256 public constant MINIMUM_USD = 100 * 10 ** 18;
-    // keep track of funders
+    // create new funder
     // struct Funder {
     //     uint256 _id;
     //     address _fundersAddress;
     //     uint258 _amountFunded;
     // }
+    
     mapping (address => uint256) public addressToAmountFunded;
     // mapping(uint => Funder) public funders;
     address[] public funders;
@@ -68,8 +69,30 @@ contract StakeHolder {
             return false;
         }
     };
+
     function withdraw() onlyOwner{
-        //hold on for now
+        //loop through the funders array and set their amount funded to zero
+        for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++){
+            address funder = funders[funderIndex];
+            addressToAmountFunded[funder] = 0;
+        };
+        funders = new address[](0);
+        //transfer funds to owner
+        (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "Call failed");
+    };
+
+    //contract recieves avax
+    fallback() external payable {
+        fund();
     };
     
+    receive() external payable {
+        fund();
+    }
+
+    //function to check contract's balance
+    function checkBalance(){
+        return address(this).balance;
+    };
 }
