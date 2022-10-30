@@ -6,7 +6,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 library PriceConverter {
     function getPrice() internal view returns (uint256) {
         // Avalanche AVAX / USD Address
-        // https://docs.chain.link/docs/ethereum-addresses/
+        // https://docs.chain.link/docs/data-feeds/price-feeds/addresses/?network=avalanche
         AggregatorV3Interface priceFeed = AggregatorV3Interface(
             0x155835C5755205597d62703a5A0b37e57a26Ee5C
         );
