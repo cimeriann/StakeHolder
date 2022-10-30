@@ -40,7 +40,9 @@ contract StakeHolder {
     function activate() public {
         status = StakingStatus.StakingHasBegun;
     };
-
+    modifier onlyOwner {
+        require(contractOwner == msg.sender)
+    }
     function isActive() public returns(bool){
         return status == Status.StakingHasBegun;
     };
@@ -51,6 +53,9 @@ contract StakeHolder {
         } else {
             return false;
         }
+    };
+    function withdraw() onlyOwner{
+
     };
     
 }
