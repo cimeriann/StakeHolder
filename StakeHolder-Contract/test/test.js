@@ -31,3 +31,11 @@ describe("StakeHolder Contract", function () {
 
 
 })
+
+describe("Price Converter smart contract", async function(){
+    it("getPrice should return the price of avax in dollars", async function(){
+    const [signer] = ethers.getSigners();
+
+    })
+
+});

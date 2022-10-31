@@ -12,7 +12,7 @@ contract StakeHolder {
     address public immutable contractOwner;
     uint256 constant public StakingPeriod = 365;
     // keep track of the number of days that have passed since staking began
-    // uint256 public numberOfDaysSinceStakingBegan;
+    uint256 public numberOfDaysSinceStakingBegan;
     uint256 public constant MINIMUM_USD = 100 * 10 ** 18;
     // create new funder
     // struct Funder {
@@ -20,7 +20,7 @@ contract StakeHolder {
     //     address _fundersAddress;
     //     uint258 _amountFunded;
     // }
-    
+
     mapping (address => uint256) public addressToAmountFunded;
     // mapping(uint => Funder) public funders;
     address[] public funders;
@@ -41,16 +41,16 @@ contract StakeHolder {
         funders.push(msg.sender);
     }
 
-    function addFunder(address memory _funderAddress, uint256 memory _amountFunded){
-        //incomplete, hold on for now
-        funderCount+=1;
-        funders[funderCount] = Funder(funderCount, _funderAddress, _amountFunded);
+    // function addFunder(address memory _funderAddress, uint256 memory _amountFunded){
+    //     //incomplete, hold on for now
+    //     funderCount+=1;
+    //     funders[funderCount] = Funder(funderCount, _funderAddress, _amountFunded);
 
-    };
-    function activate() public returns(bool){
-        status = StakingStatus.StakingHasBegun;
-        return status == StakingStatus.StakingHasBegun;
-    };
+    // };
+    // function activate() public returns(bool){
+    //     status = StakingStatus.StakingHasBegun;
+    //     return status == StakingStatus.StakingHasBegun;
+    // };
 
     modifier onlyOwner {
         require(msg.sender == contractOwner, "UNAUTHORIZED!!");
@@ -58,9 +58,10 @@ contract StakeHolder {
         _;
     }
 
-    function isActive() public returns(bool){
-        return status == Status.StakingHasBegun;
-    };
+    // function isActive() public returns(bool){
+    //     return status == Status.StakingHasBegun;
+    // };
+
     function stakingEnded() public returns(bool){
         if (numberOfDaysSinceStakingBegan == StakingPeriod) {
             status = Status.StakingHasEnded;
