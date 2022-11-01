@@ -63,12 +63,12 @@ contract StakeHolder {
         _;
     }
 
-    function activate() public onlyOwner returns (bool) {
+    function activate() external onlyOwner returns (bool) {
         status.StakingHasBegun = true;
         return status.StakingHasBegun;
     }
 
-    function stakingStarted() public returns (bool) {
+    function stakingStarted() external returns (bool) {
         status.StakingHasBegun = true;
         return status.StakingHasBegun;
     }
@@ -83,7 +83,7 @@ contract StakeHolder {
     //     }
     // }
 
-    function withdraw() public onlyOwner {
+    function withdraw() external onlyOwner {
         //loop through the funders array and set their amount funded to zero
         for (
             uint256 funderIndex = 0;
