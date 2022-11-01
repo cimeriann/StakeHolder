@@ -1,12 +1,13 @@
 const { expect } = require("chai");
 const { ethers } = require("ethers");
 
-describe("StakeHolder Contract", function () {
-    it("deployment should set status to WaitingToStake", async function(){
+describe("StakeHolder Contract",  async () => {
+    it("deployment should set status to WaitingToStake", async () => {
         const [owner] = await ethers.getSigners();
 
-        const StakeHolderContract = await ethers.getContractFactory("StakeHolder");
-
+        const StakeHolder = await ethers.getContractFactory("StakeHolder");
+        const stakeHolder = await StakeHolder.deploy();
+        await stakeHolder.deployed();
         //test incomplete, hold on for now
     });
     it("the fund function should send avax to the smart contract", async function() {

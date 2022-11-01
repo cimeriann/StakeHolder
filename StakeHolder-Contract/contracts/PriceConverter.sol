@@ -13,7 +13,7 @@ library PriceConverter {
         (, int256 answer, , , ) = priceFeed.latestRoundData();
         // AVAX/USD rate in 18 digit
         return uint256(answer * 10000000000);
-    };
+    }
 
     // 1000000000
     function getConversionRate(uint256 avaxAmount)
@@ -25,5 +25,5 @@ library PriceConverter {
         uint256 avaxAmountInUsd = (avaxPrice * avaxAmount) / 1000000000000000000;
         // the actual ETH/USD conversion rate, after adjusting the extra 0s.
         return avaxAmountInUsd;
-    };
+    }
 }

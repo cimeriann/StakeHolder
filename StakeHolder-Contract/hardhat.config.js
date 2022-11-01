@@ -12,7 +12,7 @@ const {
 } = process.env;
 
 module.exports = {
-  solidity: "0.7.3",
+  solidity: "0.8.13",
   networks: {
     avalancheTest: {
       url: TESTNET_API_URL,
