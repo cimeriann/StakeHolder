@@ -2,11 +2,11 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\PriceConverter.sol": {
-      "lastModificationDate": 1667243587420,
-      "contentHash": "7e7d96b6545a1be98b9f0e250fafb389",
+      "lastModificationDate": 1667301761364,
+      "contentHash": "7a25d4803f56e209c51293c70fa0a3fa",
       "sourceName": "contracts/PriceConverter.sol",
       "solcConfig": {
-        "version": "0.8.13",
+        "version": "0.8.17",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -32,7 +32,7 @@
         "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"
       ],
       "versionPragmas": [
-        "^0.8.0"
+        ">=0.8.0"
       ],
       "artifacts": [
         "PriceConverter"
@@ -43,7 +43,7 @@
       "contentHash": "d9654a0fc044a31d4106ee6bca772add",
       "sourceName": "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
       "solcConfig": {
-        "version": "0.8.13",
+        "version": "0.8.17",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -74,11 +74,11 @@
       ]
     },
     "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\StakeHolder.sol": {
-      "lastModificationDate": 1667245108890,
-      "contentHash": "38cef2928606bfc71a90d86aea4fdb02",
+      "lastModificationDate": 1667303325217,
+      "contentHash": "283618ab22b22d7858deddce309763b2",
       "sourceName": "contracts/StakeHolder.sol",
       "solcConfig": {
-        "version": "0.8.13",
+        "version": "0.8.17",
         "settings": {
           "optimizer": {
             "enabled": false,
