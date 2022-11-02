@@ -1,5 +1,12 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+require('dotenv').config();
+const {
+  AVALANCHE_MAIN_PRIVATE_KEY,
+  AVALANCHE_TEST_PRIVATE_KEY,
+  TESTNET_API_URL,
+  MAINNET_API_URL
+} = process.env;
 
 describe("StakeHolder Contract", async () => {
     let deployer;
@@ -25,13 +32,20 @@ describe("StakeHolder Contract", async () => {
         expect(deployer['address']).to.equal(contractOwner);
       });
     });
-//   it("constructor", async () => {
 
-//     const waitingToStakeStat = true;
-//     expect(await stakeHolder.status.waitingToStake).to.equal(
-//       waitingToStakeStat
-//     );
-//   });
+    describe("contract functions", () =>{
+        it("should receive funds when the fund function is called", async () =>{
+            const value = ethers.utils.parseEther('100');
+            let wallet = new ethers.Wallet(AVALANCHE_TEST_PRIVATE_KEY, TESTNET_API_URL);
+            const tx = {
+                to: stakeHolder.address,
+                value: ethers.utils.parseEther("100")
+            }
+            const txReceipt = await wallet.sendTransaction(tx);
+            const stakeHolderBalance = await ethers.provider.getBalance(stakeHolder['address']);
+            expect(stakeHolderBalance).to.equal(value.toString());
+        });
+    });
 });
 
 

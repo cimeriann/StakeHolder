@@ -46,8 +46,8 @@ contract StakeHolder {
             msg.value.getConversionRate() >= MINIMUM_USD,
             "You need to spend more avax"
         );
-        addressToAmountFunded[msg.sender] += msg.value;
         funders.push(msg.sender);
+        addressToAmountFunded[msg.sender] += msg.value;
 
         // addFunder(msg.sender, msg.value);
     }
