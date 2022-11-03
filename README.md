@@ -8,3 +8,4 @@
 
 #### Setup
 * Clone the repository:
+'https://github.com/Olaaa30/StakeHolder/'
