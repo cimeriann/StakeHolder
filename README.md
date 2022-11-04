@@ -6,6 +6,9 @@
 ### Installation
 * Note: This dApp was built and tested on the Avalanche chain but can be configured to run on other chains too.
 
-#### Setup
+## Setup
 * Clone the repository:
-'https://github.com/Olaaa30/StakeHolder/'
+```https://github.com/Olaaa30/StakeHolder/```
+
+### Backend
+```cd StakeHolder-Contract```

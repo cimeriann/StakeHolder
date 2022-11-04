@@ -5,7 +5,10 @@ const {
   AVALANCHE_MAIN_PRIVATE_KEY,
   AVALANCHE_TEST_PRIVATE_KEY,
   TESTNET_API_URL,
-  MAINNET_API_URL
+  MAINNET_API_URL,
+  PROVIDER,
+  SENDERPK,
+  SENDER,
 } = process.env;
 
 describe("StakeHolder Contract", async () => {
@@ -34,16 +37,34 @@ describe("StakeHolder Contract", async () => {
     });
 
     describe("contract functions", () =>{
-        it("should receive funds when the fund function is called", async () =>{
-            const value = ethers.utils.parseEther('100');
-            let wallet = new ethers.Wallet(AVALANCHE_TEST_PRIVATE_KEY, TESTNET_API_URL);
-            const tx = {
+        // it("should receive funds when the fund function is called", async () =>{
+        //     const value = ethers.utils.parseEther('100');
+        //     let wallet = new ethers.Wallet(AVALANCHE_TEST_PRIVATE_KEY, TESTNET_API_URL);
+        //     const tx = {
+        //         to: stakeHolder.address,
+        //         value: ethers.utils.parseEther("100")
+        //     }
+        //     const txReceipt = await wallet.sendTransaction(tx);
+        //     const stakeHolderBalance = await ethers.provider.getBalance(stakeHolder['address']);
+        //     expect(stakeHolderBalance).to.equal(value.toString());
+        // });
+        const sender = "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199";
+        it("should revert when funds sent is too low", async () => {
+            const provider = waffle.provider
+            expect(await provider.getBalance(stakeHolder.address)).to.equal(0);
+        });
+        it("should withdraw all funds", async () =>{
+            await stakeHolder.withdraw()
+            const stakeHolderBalance = await ethers.provider.getBalance(
+              stakeHolder["address"]
+            );
+            expect(stakeHolderBalance.toString()).to.equal("0");
+            await deployer.sendTransaction({
                 to: stakeHolder.address,
-                value: ethers.utils.parseEther("100")
-            }
-            const txReceipt = await wallet.sendTransaction(tx);
-            const stakeHolderBalance = await ethers.provider.getBalance(stakeHolder['address']);
-            expect(stakeHolderBalance).to.equal(value.toString());
+                value: 100000,
+                gasLimit: 35000
+            });
+            expect(stakeHolderBalance.toString().to.equal)("100000");
         });
     });
 });

@@ -74,8 +74,8 @@
       ]
     },
     "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\StakeHolder.sol": {
-      "lastModificationDate": 1667380309346,
-      "contentHash": "bb98bcb43232824d996d86e613a6dd7e",
+      "lastModificationDate": 1667401539594,
+      "contentHash": "b66dc6a4955ad69931ac83a80a9d6812",
       "sourceName": "contracts/StakeHolder.sol",
       "solcConfig": {
         "version": "0.8.17",

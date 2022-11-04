@@ -51,6 +51,9 @@ contract StakeHolder {
 
         // addFunder(msg.sender, msg.value);
     }
+    function getAccountBalance(address _accountAddresss) external view returns(uint256){
+        return addressToAmountFunded[_accountAddresss];
+    }
 
     // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
     //     funderCount+=1;

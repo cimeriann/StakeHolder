@@ -13,7 +13,7 @@ async function deploy(){
 
     console.log("Successfully deployed StakeHolder at:", deployedStakeHolderContract.address);
 };
-
+module.exports.default = deploy;
 main()
     .then(() => process.exit(0))
     .catch((error) => {
