@@ -40,19 +40,30 @@ contract StakeHolder {
         contractOwner = msg.sender;
         status.WaitingToStake = true;
     }
+    modifier onlyOwner() {
+        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
+        if (msg.sender != contractOwner) revert NotOwner();
+        _;
+    }
+
+    event Withdraw(address _contractOwner, uint256 value);
+    event Fund(address sender, uint256 value);
+
 
     function fund() public payable {
-        require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
-            "You need to spend more avax"
-        );
+        // require(
+        //     msg.value.getConversionRate() >= MINIMUM_USD,
+        //     "You need to spend more avax"
+        // );
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
-
+        emit Fund(msg.sender, msg.value);
         // addFunder(msg.sender, msg.value);
     }
-    function getAccountBalance(address _accountAddresss) external view returns(uint256){
-        return addressToAmountFunded[_accountAddresss];
+
+    function getFunderBalance(address _funderAddress) public view returns(uint256){
+        uint256 balance = addressToAmountFunded[_funderAddress];
+        return balance;
     }
 
     // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
@@ -60,21 +71,16 @@ contract StakeHolder {
     //     // funders.push(Funder(funderCount, _funderAddress, _amountFunded));
     //     return funderCount;
     // }
-    modifier onlyOwner() {
-        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
-        if (msg.sender != contractOwner) revert NotOwner();
-        _;
-    }
+    
+    // function activate() external onlyOwner returns (bool) {
+    //     status.StakingHasBegun = true;
+    //     return status.StakingHasBegun;
+    // }
 
-    function activate() external onlyOwner returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
-    }
-
-    function stakingStarted() external returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
-    }
+    // function stakingStarted() external returns (bool) {
+    //     status.StakingHasBegun = true;
+    //     return status.StakingHasBegun;
+    // }
 
     // function stakingEnded() public returns(bool){
     //     function incomplete
@@ -104,6 +110,7 @@ contract StakeHolder {
             value: address(this).balance
         }("");
         require(callSuccess, "Call failed");
+        emit Withdraw(msg.sender, address(this).balance);
     }
 
     //contract recieves avax
