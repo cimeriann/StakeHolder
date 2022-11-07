@@ -2,105 +2,122 @@
 pragma solidity >=0.8.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./PriceConverter.sol";
 
 error NotOwner();
+error InsufficientStake(uint256 _minAVAX);
+error StakingPeriodElapsed();
+error StakeBeingUsed();
+error ZeroStakeBalance();
 
-contract StakeHolder {
+/// @title StakeHolder
+/// @author Shootfish XYZ
+contract StakeHolder is Ownable, ReentrancyGuard {
+    /// @todo add natspec comments to functions in this contract
     using PriceConverter for uint256;
 
-    address public immutable contractOwner;
-    uint256 public constant StakingPeriod = 365;
-    // keep track of the number of days that have passed since staking began
-    uint256 public numberOfDaysSinceStakingBegan;
-    uint256 public constant MINIMUM_USD = 100 * 10**18;
-    // create new funder
-    // struct Funder {
-    //     uint256 _id;
-    //     address _fundersAddress;
-    //     uint256 _amountFunded;
-    // }
-    // Funder[] public funders;
+    uint8 private constant DECIMALS = 18;
+    uint256 private constant STAKING_PERIOD = 365 days;
+    uint256 private constant MINIMUM_USD = 100 * (10**DECIMALS);
 
-    mapping(address => uint256) public addressToAmountFunded;
-    // mapping(uint => Funder) public funders;
-    address[] public funders;
+    uint256 public totalStake;
+    address[] private stakers;
+    mapping(address => uint256) private amountStaked;
 
-    uint256 public funderCount = 0;
-
-    // enum StakingStatus { WaitingToStake, StakingHasBegun, StakingHasEnded }
-    struct StakingStatus {
-        bool WaitingToStake;
-        bool StakingHasBegun;
-        bool StakingHasEnded;
+    enum Action {
+        FUND,
+        WITHDRAW
     }
-    StakingStatus public status;
+    enum StakingStatus {
+        PENDING,
+        IN_STAKE,
+        ENDED
+    }
+    StakingStatus public stakingStatus;
 
     constructor() {
-        contractOwner = msg.sender;
-        status.WaitingToStake = true;
+        stakingStatus = StakingStatus.PENDING;
     }
 
-    function fund() public payable {
-        require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
-            "You need to spend more avax"
-        );
-        funders.push(msg.sender);
-        addressToAmountFunded[msg.sender] += msg.value;
-
-        // addFunder(msg.sender, msg.value);
+    /* View Functions */
+    function getTotalStake() external view returns (uint256 balance) {
+        balance = totalStake;
     }
 
-    // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
-    //     funderCount+=1;
-    //     // funders.push(Funder(funderCount, _funderAddress, _amountFunded));
-    //     return funderCount;
-    // }
-    modifier onlyOwner() {
-        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
-        if (msg.sender != contractOwner) revert NotOwner();
-        _;
-    }
-
-    function activate() external onlyOwner returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
-    }
-
-    function stakingStarted() external returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
-    }
-
-    // function stakingEnded() public returns(bool){
-    //     function incomplete
-    //     if (numberOfDaysSinceStakingBegan == StakingPeriod) {
-    //         status.StakingHasEnded;
-    //         return status.StakingHasEnded;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    function withdraw() external onlyOwner {
-        //loop through the funders array and set their amount funded to zero
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < funders.length;
-            funderIndex++
-        ) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+    /* Public & External Functions */
+    function fund() public payable nonReentrant {
+        if (stakingStatus != StakingStatus.PENDING) {
+            revert StakingPeriodElapsed();
+        }
+        if (msg.value.getUsdAmount() < MINIMUM_USD) {
+            revert InsufficientStake(MINIMUM_USD.getAvaxAmount());
         }
 
-        funders = new address[](0);
-        // funders = new address[](0);
-        //transfer funds to owner
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
-        require(callSuccess, "Call failed");
+        amountStaked[msg.sender] += msg.value;
+        totalStake += msg.value;
+        _sync(msg.sender, Action.FUND);
+    }
+
+    function withdraw() external nonReentrant {
+        if (stakingStatus == StakingStatus.IN_STAKE) {
+            revert StakeBeingUsed();
+        }
+        if (amountStaked[msg.sender] == 0) {
+            revert ZeroStakeBalance();
+        }
+
+        // cache staked amount
+        uint256 stake = amountStaked[msg.sender];
+        amountStaked[msg.sender] = 0;
+        totalStake -= stake;
+        (bool success, ) = payable(msg.sender).call{value: stake}("");
+        require(success, "Call failed");
+        _sync(msg.sender, Action.WITHDRAW);
+    }
+
+    /* Owner Functions */
+    function modifyStatus(StakingStatus _status)
+        external
+        onlyOwner
+        returns (StakingStatus currentStatus)
+    {
+        stakingStatus = _status;
+        currentStatus = stakingStatus;
+    }
+
+    /* Private Functions */
+    function _sync(address _account, Action _action) private {
+        uint256 lastIndex = stakers.length - 1;
+
+        if (_action == Action.FUND) {
+            for (uint256 i = 0; i < stakers.length; ) {
+                if (stakers[i] == _account) {
+                    break;
+                } else if (i == lastIndex) {
+                    stakers.push(_account);
+                }
+
+                unchecked {
+                    ++i;
+                }
+            }
+        } else if (_action == Action.WITHDRAW) {
+            for (uint256 i = 0; i < stakers.length; ) {
+                if (stakers[i] == _account) {
+                    if (i != lastIndex) {
+                        stakers[i] = stakers[lastIndex];
+                    }
+                    stakers.pop();
+                    break;
+                }
+
+                unchecked {
+                    ++i;
+                }
+            }
+        }
     }
 
     //contract recieves avax
@@ -110,10 +127,5 @@ contract StakeHolder {
 
     receive() external payable {
         fund();
-    }
-
-    //function to check contract's balance
-    function checkBalance() public view returns (uint256) {
-        return address(this).balance;
     }
 }
