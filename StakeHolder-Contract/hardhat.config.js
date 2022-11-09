@@ -16,18 +16,18 @@ module.exports = {
   solidity: "0.8.17",
   networks: {
     avalancheTest: {
-      url: TESTNET_API_URL,
-      gasPrice: 500000000000,
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      gasPrice: 350000000000,
       maxPriorityFee: 15000000000,
       chainId: 43113,
-      accounts: [`0x${AVALANCHE_TEST_PRIVATE_KEY}`],
+      accounts: [AVALANCHE_TEST_PRIVATE_KEY],
     },
     avalancheMain: {
-      url: MAINNET_API_URL,
-      gasPrice: 500000000000,
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      gasPrice: 350000000000,
       maxPriorityFee: 15000000000,
       chainId: 43114,
-      accounts: [`0x${AVALANCHE_MAIN_PRIVATE_KEY}`],
+      accounts: [AVALANCHE_MAIN_PRIVATE_KEY],
     },
   },
 };

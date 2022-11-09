@@ -1,22 +1,28 @@
-const { ethers } = require("ethers");
+const { ethers } = require("hardhat");
 
-async function deploy(){
-    const [deployer] = await ethers.getSigners();
+async function deploy() {
+  const [deployer] = await ethers.getSigners();
 
-    console.log("Deploying contracts with the account:", deployer.address);
+  console.log("Deploying contracts with the account:", deployer.address);
 
-    console.log("Account Balance:", (await deployer.getBalance()).toString());
+  console.log("Account Balance:", (await deployer.getBalance()).toString());
 
-    const StakeHolder =  await ethers.getContractFactory("StakeHolder");
+  const StakeHolder = await ethers.getContractFactory("StakeHolder");
 
-    const deployedStakeHolderContract = await StakeHolder.deploy();
+  const deployedStakeHolderContract = await StakeHolder.deploy();
 
-    console.log("Successfully deployed StakeHolder at:", deployedStakeHolderContract.address);
-};
+  const transactionReceipt =
+    deployedStakeHolderContract.deployTransaction.wait(2);
+
+  console.log(
+    "Successfully deployed StakeHolder at:",
+    deployedStakeHolderContract.address
+  );
+}
 module.exports.default = deploy;
-main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+deploy()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
