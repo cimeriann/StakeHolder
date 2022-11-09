@@ -2,44 +2,45 @@
 pragma solidity >=0.8.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./PriceConverter.sol";
 
 error NotOwner();
+error InsufficientStake(uint256 _minAVAX);
+error StakingPeriodElapsed();
+error StakeBeingUsed();
+error ZeroStakeBalance();
 
-contract StakeHolder {
+/// @title StakeHolder
+/// @author Shootfish XYZ
+contract StakeHolder is Ownable, ReentrancyGuard {
+    /// @todo add natspec comments to functions in this contract
     using PriceConverter for uint256;
 
-    address public immutable contractOwner;
-    uint256 public constant StakingPeriod = 365;
-    // keep track of the number of days that have passed since staking began
-    uint256 public numberOfDaysSinceStakingBegan;
-    uint256 public constant MINIMUM_USD = 100 * 10**18;
-    // create new funder
-    // struct Funder {
-    //     uint256 _id;
-    //     address _fundersAddress;
-    //     uint256 _amountFunded;
-    // }
-    // Funder[] public funders;
+    uint8 private constant DECIMALS = 18;
+    uint256 private constant STAKING_PERIOD = 365 days;
+    uint256 private constant MINIMUM_USD = 100 * (10**DECIMALS);
 
-    mapping(address => uint256) public addressToAmountFunded;
-    // mapping(uint => Funder) public funders;
-    address[] public funders;
+    uint256 public totalStake;
+    address[] private stakers;
+    mapping(address => uint256) private amountStaked;
 
-    uint256 public funderCount = 0;
-
-    // enum StakingStatus { WaitingToStake, StakingHasBegun, StakingHasEnded }
-    struct StakingStatus {
-        bool WaitingToStake;
-        bool StakingHasBegun;
-        bool StakingHasEnded;
+    enum Action {
+        FUND,
+        WITHDRAW
     }
-    StakingStatus public status;
+    enum StakingStatus {
+        PENDING,
+        IN_STAKE,
+        ENDED
+    }
+    StakingStatus public stakingStatus;
 
     constructor() {
-        contractOwner = msg.sender;
-        status.WaitingToStake = true;
+        stakingStatus = StakingStatus.PENDING;
     }
+
     modifier onlyOwner() {
         require(msg.sender == contractOwner, "UNAUTHORIZED!!");
         if (msg.sender != contractOwner) revert NotOwner();
@@ -49,21 +50,15 @@ contract StakeHolder {
     event Withdraw(address _contractOwner, uint256 value);
     event Fund(address sender, uint256 value);
 
-
     function fund() public payable {
-        // require(
-        //     msg.value.getConversionRate() >= MINIMUM_USD,
-        //     "You need to spend more avax"
-        // );
+        require(
+            msg.value.getConversionRate() >= MINIMUM_USD,
+            "You need to spend more avax"
+        );
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
-        emit Fund(msg.sender, msg.value);
-        // addFunder(msg.sender, msg.value);
-    }
 
-    function getFunderBalance(address _funderAddress) public view returns(uint256){
-        uint256 balance = addressToAmountFunded[_funderAddress];
-        return balance;
+        // addFunder(msg.sender, msg.value);
     }
 
     // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
@@ -71,36 +66,52 @@ contract StakeHolder {
     //     // funders.push(Funder(funderCount, _funderAddress, _amountFunded));
     //     return funderCount;
     // }
-    
-    // function activate() external onlyOwner returns (bool) {
-    //     status.StakingHasBegun = true;
-    //     return status.StakingHasBegun;
-    // }
+    modifier onlyOwner() {
+        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
+        if (msg.sender != contractOwner) revert NotOwner();
+        _;
+    }
 
-    // function stakingStarted() external returns (bool) {
-    //     status.StakingHasBegun = true;
-    //     return status.StakingHasBegun;
-    // }
+    function activate() external onlyOwner returns (bool) {
+        status.StakingHasBegun = true;
+        return status.StakingHasBegun;
+    }
 
-    // function stakingEnded() public returns(bool){
-    //     function incomplete
-    //     if (numberOfDaysSinceStakingBegan == StakingPeriod) {
-    //         status.StakingHasEnded;
-    //         return status.StakingHasEnded;
-    //     } else {
-    //         return false;
-    //     }
-    // }
+    function stakingStarted() external returns (bool) {
+        status.StakingHasBegun = true;
+        return status.StakingHasBegun;
+    }
 
-    function withdraw() external onlyOwner {
-        //loop through the funders array and set their amount funded to zero
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < funders.length;
-            funderIndex++
-        ) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+    /* Private Functions */
+    function _sync(address _account, Action _action) private {
+        uint256 lastIndex = stakers.length - 1;
+
+        if (_action == Action.FUND) {
+            for (uint256 i = 0; i < stakers.length; ) {
+                if (stakers[i] == _account) {
+                    break;
+                } else if (i == lastIndex) {
+                    stakers.push(_account);
+                }
+
+                unchecked {
+                    ++i;
+                }
+            }
+        } else if (_action == Action.WITHDRAW) {
+            for (uint256 i = 0; i < stakers.length; ) {
+                if (stakers[i] == _account) {
+                    if (i != lastIndex) {
+                        stakers[i] = stakers[lastIndex];
+                    }
+                    stakers.pop();
+                    break;
+                }
+
+                unchecked {
+                    ++i;
+                }
+            }
         }
 
         funders = new address[](0);
@@ -110,7 +121,6 @@ contract StakeHolder {
             value: address(this).balance
         }("");
         require(callSuccess, "Call failed");
-        emit Withdraw(msg.sender, address(this).balance);
     }
 
     //contract recieves avax
@@ -120,10 +130,5 @@ contract StakeHolder {
 
     receive() external payable {
         fund();
-    }
-
-    //function to check contract's balance
-    function checkBalance() public view returns (uint256) {
-        return address(this).balance;
     }
 }
