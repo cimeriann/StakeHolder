@@ -4,8 +4,6 @@ require("dotenv").config();
 const {
   AVALANCHE_MAIN_PRIVATE_KEY,
   AVALANCHE_TEST_PRIVATE_KEY,
-  TESTNET_API_URL,
-  MAINNET_API_URL,
 } = process.env;
 
 describe("StakeHolder Contract", async () => {
