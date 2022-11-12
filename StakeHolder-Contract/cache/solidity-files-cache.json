@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\PriceConverter.sol": {
-      "lastModificationDate": 1667301761364,
-      "contentHash": "7a25d4803f56e209c51293c70fa0a3fa",
+      "lastModificationDate": 1668179040473,
+      "contentHash": "3945361d2a8b53025bd796a9b694f460",
       "sourceName": "contracts/PriceConverter.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -74,8 +74,8 @@
       ]
     },
     "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\StakeHolder.sol": {
-      "lastModificationDate": 1667765000646,
-      "contentHash": "fc6846b4c82287f138a32250560aab9c",
+      "lastModificationDate": 1668268904714,
+      "contentHash": "3fb1eeb24081dc2ad2fa3a3b30236cf0",
       "sourceName": "contracts/StakeHolder.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -102,6 +102,8 @@
       },
       "imports": [
         "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
         "./PriceConverter.sol"
       ],
       "versionPragmas": [
@@ -109,6 +111,150 @@
       ],
       "artifacts": [
         "StakeHolder"
+      ]
+    },
+    "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
+      "lastModificationDate": 1667225777936,
+      "contentHash": "e436cea06129be2c73cda4b1acc848b5",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\node_modules\\@openzeppelin\\contracts\\security\\ReentrancyGuard.sol": {
+      "lastModificationDate": 1667225777990,
+      "contentHash": "92f9448b23a90ea3bb932ee55cc3ccce",
+      "sourceName": "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
+      "lastModificationDate": 1667225775377,
+      "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "C:\\Users\\Hp Folio\\Documents\\Coding stuff\\work\\StakeHolder\\StakeHolder-Contract\\contracts\\_PriceConverter.sol": {
+      "lastModificationDate": 1668268395997,
+      "contentHash": "4d7f2d3020ed3919ffaf2d0f26e37b66",
+      "sourceName": "contracts/_PriceConverter.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./PriceConverter.sol"
+      ],
+      "versionPragmas": [
+        ">=0.8.0"
+      ],
+      "artifacts": [
+        "TestPriceConverter"
       ]
     }
   }

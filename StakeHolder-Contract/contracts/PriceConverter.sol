@@ -10,7 +10,7 @@ library PriceConverter {
     /// @dev see https://docs.chain.link/docs/data-feeds/price-feeds/addresses/?network=avalanche
     /// @return price Price of AVAX in USD to 18 decimals
     function getPrice() internal view returns (uint256 price) {
-        uint256 price;
+        // uint256 price;
         uint8 DECIMALS = 18;
 
         /// FUJI: 0x5498BB86BC934c8D34FDA08E81D444153d0D06aD
@@ -21,10 +21,11 @@ library PriceConverter {
         (, int256 answer, , , ) = priceFeed.latestRoundData();
 
         if (DECIMALS >= priceFeed.decimals()) {
-            price = answer * (10**(DECIMALS - priceFeed.decimals()));
+            price = uint256(answer) * (10**(DECIMALS - priceFeed.decimals()));
         } else {
-            price = answer / (10**(priceFeed.decimals() - DECIMALS));
+            price = uint256(answer) / (10**(priceFeed.decimals() - DECIMALS));
         }
+        return price;
     }
 
     /// @notice Returns the USD equivalent of AVAX amount in 18 decimals

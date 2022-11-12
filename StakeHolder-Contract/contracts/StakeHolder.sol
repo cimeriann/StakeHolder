@@ -21,6 +21,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
     uint8 private constant DECIMALS = 18;
     uint256 private constant STAKING_PERIOD = 365 days;
     uint256 private constant MINIMUM_USD = 100 * (10**DECIMALS);
+    address public contractOwner;
 
     uint256 public totalStake;
     address[] private stakers;
@@ -39,12 +40,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
 
     constructor() {
         stakingStatus = StakingStatus.PENDING;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
-        if (msg.sender != contractOwner) revert NotOwner();
-        _;
+        contractOwner = msg.sender;
     }
 
     event Withdraw(address _contractOwner, uint256 value);
@@ -52,11 +48,12 @@ contract StakeHolder is Ownable, ReentrancyGuard {
 
     function fund() public payable {
         require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
+            msg.value.getUsdAmount() >= MINIMUM_USD,
             "You need to spend more avax"
         );
-        funders.push(msg.sender);
-        addressToAmountFunded[msg.sender] += msg.value;
+        stakers.push(msg.sender);
+        amountStaked[msg.sender] += msg.value;
+        totalStake += msg.value;
 
         // addFunder(msg.sender, msg.value);
     }
@@ -66,20 +63,20 @@ contract StakeHolder is Ownable, ReentrancyGuard {
     //     // funders.push(Funder(funderCount, _funderAddress, _amountFunded));
     //     return funderCount;
     // }
-    modifier onlyOwner() {
-        require(msg.sender == contractOwner, "UNAUTHORIZED!!");
-        if (msg.sender != contractOwner) revert NotOwner();
-        _;
+    // modifier onlyOwner() {
+    //     require(msg.sender == contractOwner, "UNAUTHORIZED!!");
+    //     if (msg.sender != contractOwner) revert NotOwner();
+    //     _;
+    // }
+
+    function activate() external onlyOwner returns (StakingStatus) {
+        stakingStatus = StakingStatus.IN_STAKE;
+        return stakingStatus;
     }
 
-    function activate() external onlyOwner returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
-    }
-
-    function stakingStarted() external returns (bool) {
-        status.StakingHasBegun = true;
-        return status.StakingHasBegun;
+    function stakingEnded() external returns (StakingStatus) {
+        stakingStatus = StakingStatus.ENDED;
+        return stakingStatus;
     }
 
     /* Private Functions */
@@ -114,7 +111,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
             }
         }
 
-        funders = new address[](0);
+        // stakers = new address[](0);
         // funders = new address[](0);
         //transfer funds to owner
         (bool callSuccess, ) = payable(msg.sender).call{
