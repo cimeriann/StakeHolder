@@ -40,7 +40,6 @@ contract StakeHolder is Ownable, ReentrancyGuard {
 
     constructor() {
         stakingStatus = StakingStatus.PENDING;
-        contractOwner = msg.sender;
     }
 
     event Withdraw(address _contractOwner, uint256 value);
@@ -51,11 +50,27 @@ contract StakeHolder is Ownable, ReentrancyGuard {
             msg.value.getUsdAmount() >= MINIMUM_USD,
             "You need to spend more avax"
         );
+        // if (msg.value.getUsdAmount < MINIMUM_USD) revert InsufficientStake();
         stakers.push(msg.sender);
         amountStaked[msg.sender] += msg.value;
         totalStake += msg.value;
 
         // addFunder(msg.sender, msg.value);
+    }
+
+    function withdraw() public onlyOwner {
+        address[] memory _stakers = stakers;
+        for (uint256 _stakersIndex = 0; _stakersIndex < _stakers.length; ) {
+            _sync(_stakers[_stakersIndex], Action.WITHDRAW);
+            unchecked {
+                ++_stakersIndex;
+            }
+        }
+
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+        require(callSuccess, "Call failed");
     }
 
     // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
@@ -110,14 +125,18 @@ contract StakeHolder is Ownable, ReentrancyGuard {
                 }
             }
         }
+    }
 
-        // stakers = new address[](0);
-        // funders = new address[](0);
-        //transfer funds to owner
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
-        require(callSuccess, "Call failed");
+    function getStaker(uint256 _index) public view returns (address funder) {
+        return stakers[_index];
+    }
+
+    function getAmountStaked(address _funder)
+        public
+        view
+        returns (uint256 _amountStaked)
+    {
+        return amountStaked[_funder];
     }
 
     //contract recieves avax
