@@ -8,18 +8,7 @@ export function NavBar(props) {
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content=end">
         <Navbar.Text>
-          <Button
-            style={{ display: props.showButton }}
-            variant="success"
-            onClick={async () => {
-              props.login();
-            }}
-          >
-            Connect to Metamask
-          </Button>
-          <div
-            style={{ display: props.showButton === "none" ? "block" : "none" }}
-          ></div>
+          <Button>Connect to Metamask</Button>
         </Navbar.Text>
       </Navbar.Collapse>
     </Navbar>
