@@ -2,7 +2,7 @@
 
 # dependencies
 StakeHolder-Contract/node_modules/
-StakeHolder-Websitenode_modules/
+StakeHolder-Website/node_modules/
 
 /.pnp
 .pnp.js
