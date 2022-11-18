@@ -1,11 +1,13 @@
-// import logo from "./logo.svg";
-
+// import NavBar from "./components/Nav";
+import Header from "./components/Header";
+import Button from "./components/Button";
+import NavBar from "./components/Nav";
 function App() {
   return (
     <div className="App">
-      <h1 className="header">StakeHolder</h1>
-      <button className="fundButton">Fund</button>
-      <button className="connectButton">Connect to MetaMask</button>
+      <Header />
+      <NavBar />
+      <Button context="Fund" />
     </div>
   );
 }

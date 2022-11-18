@@ -1,5 +1,3 @@
-require("dotenv").config();
-export const stakeHolderAddress = process.env.REACT_APP_STAKEHOLDER_ADDRESS;
 export const abi = [
   {
     inputs: [],

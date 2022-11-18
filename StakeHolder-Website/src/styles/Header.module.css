@@ -1,0 +1,9 @@
+.header {
+  text-align: center;
+  margin-top: 2rem;
+  color: #d3d3d3;
+}
+
+.header > p {
+  color: #9c9c9c;
+}
