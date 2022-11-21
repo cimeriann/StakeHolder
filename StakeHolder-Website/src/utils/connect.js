@@ -1,8 +1,8 @@
 export const ConnectWallet = async () => {
-  if (typeof window.ethereum !== "undefined") {
+  if (window.ethereum) {
     try {
       const addresses = await window.ethereum.request({
-        method: "eth_requestAccounts ",
+        method: "eth_requestAccounts",
       });
       const obj = {
         status: "Please proceed to fund smart contract",

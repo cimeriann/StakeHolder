@@ -1,9 +1,13 @@
 import React from "react";
-import styles from "../styles/Button.module.css";
+import "./ButtonUI.css";
 const Button = (props) => {
   return (
-    <button className={styles["button"]} onClick={props.onClick}>
-      {props.context}
+    <button
+      className={"ui-button" || props.className}
+      onClick={props.onClick}
+      type={props.type || "submit"}
+    >
+      {props.children}
     </button>
   );
 };

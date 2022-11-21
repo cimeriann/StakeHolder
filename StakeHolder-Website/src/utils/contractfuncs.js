@@ -16,3 +16,5 @@ export const Fund = async () => {
   let value = ethers.utils.parseEther("0.1");
   stakeHolder.Fund({ value });
 };
+
+export default Fund;

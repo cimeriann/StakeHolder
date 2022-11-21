@@ -1,6 +1,14 @@
 .nav {
-  background-color: #e84142;
+  display: flex;
+  align-items: center;
+  justify-items: space-between;
+  position: relative;
 }
 .logo {
   color: #ffffff;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-items: space-between;
 }

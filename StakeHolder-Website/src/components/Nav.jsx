@@ -1,23 +1,37 @@
 import React from "react";
-// import { ethers } from "ethers";
-import ConnectWallet from "../utils/connect";
 import Button from "./Button";
 import styles from "../styles/Nav.module.css";
-import { Link } from "react-router-dom";
-// import { ContractFuncs } from "./ContractFuncs";
 
-const NavBar = () => {
+const Nav = (props) => {
   return (
     <nav className={styles["nav"]}>
       <div>
-        {/* <Link>StakeHolder</Link> */}
         <p className={styles["logo"]}>
-          <a href="www.google.com"> StakeHolder</a>
+          <a href="/">
+            {" "}
+            <h1>StakeHolder</h1>
+          </a>
         </p>
-        <Button onClick={ConnectWallet} context="Connect To Metamask" />
+        <Button
+          className={styles["button"]}
+          onClick={(e) => props.onConnectWallet(e)}
+        >
+          {props.walletAddress.length > 0 ? (
+            <p>
+              {"Connected: " +
+                String(props.walletAddress).substring(0, 6) +
+                "..." +
+                String(props.walletAddress).substring(38)}
+            </p>
+          ) : (
+            <>
+              <p>Connect To Metamask</p>
+            </>
+          )}
+        </Button>
+        <p>{props.walletAddress > 0 ? props.status : ""}</p>
       </div>
     </nav>
   );
 };
-
-export default NavBar;
+export default Nav;
