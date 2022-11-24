@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import ConnectWallet, { getCurrentConnectedWallet } from "./utils/connect";
 import Header from "./components/Header";
 import Nav from "./components/Nav";
+import { Fund } from "./components/FundContract";
 const App = () => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
+  const [walletConnected, setWalletConnected] = useState(false);
   const addWalletListener = () => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
@@ -43,10 +45,13 @@ const App = () => {
     addWalletListener();
   }, []);
   const connectWalletClicked = async (event) => {
-    event.preventDefault();
-    const walletResponse = await ConnectWallet();
-    setStatus(walletResponse.status);
-    setWallet(walletResponse.address);
+    if (!walletConnected) {
+      event.preventDefault();
+      const walletResponse = await ConnectWallet();
+      setStatus(walletResponse.status);
+      setWallet(walletResponse.address);
+    }
+    setWalletConnected(true);
   };
   return (
     <div className="App">
@@ -56,6 +61,11 @@ const App = () => {
         status={status}
       />
       <Header />
+      {walletConnected ? (
+        <Fund />
+      ) : (
+        "Please connect your metamask account using the button above"
+      )}
     </div>
   );
 };

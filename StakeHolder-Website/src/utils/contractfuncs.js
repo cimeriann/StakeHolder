@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { abi } from "../constants/abi";
 import { stakeHolderAddress } from "../constants/constants";
 
-export const Fund = async () => {
+export const Fund = async (value) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   //   const accounts = await window.ethereum.request({
   // method: "eth_requestAccounts",
@@ -13,8 +13,6 @@ export const Fund = async () => {
     abi,
     provider.getSigner()
   );
-  let value = ethers.utils.parseEther("0.1");
-  stakeHolder.Fund({ value });
+  let fundAmount = ethers.utils.parseEther(value);
+  stakeHolder.Fund({ fundAmount });
 };
-
-export default Fund;
