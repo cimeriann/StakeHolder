@@ -1,2 +1,3 @@
 // -> function to add delegator
-const AddDelegator = async () => {};
+const addDelegator = async () => {};
+export default addDelegator;

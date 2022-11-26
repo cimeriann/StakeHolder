@@ -5,7 +5,7 @@ export const ConnectWallet = async () => {
         method: "eth_requestAccounts",
       });
       const obj = {
-        status: "Please proceed to fund smart contract",
+        status: "👇🏽 Please proceed to fund smart contract",
         address: addresses[0],
       };
       return obj;
@@ -47,12 +47,12 @@ export const getCurrentConnectedWallet = async () => {
       if (addresses.length > 0) {
         return {
           address: addresses[0],
-          status: "-> Please proceed to fund smart contract.",
+          status: "👇🏽 Please proceed to fund smart contract.",
         };
       } else {
         return {
           address: "",
-          status: "Connect to Metamask using the top right button",
+          status: "🦊 Connect to Metamask using the top right button",
         };
       }
     } catch (err) {

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ConnectWallet, { getCurrentConnectedWallet } from "./utils/connect";
-import Header from "./components/Header";
+import Landing from "./components/Landing";
 import Nav from "./components/Nav";
-import { Fund } from "./components/FundContract";
+import { FundContract } from "./components/FundContract";
+import { AddDelegator } from "./components/AddDelegator";
+import { Fund } from "./utils/contractfuncs";
+
 const App = () => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
@@ -12,7 +16,7 @@ const App = () => {
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
           setWallet(accounts[0]);
-          setStatus("👆🏽 Write a message in the text-field above.");
+          setStatus("👇🏽 Please proceed to fund smart contract");
         } else {
           setWallet("");
           setStatus("🦊 Connect to Metamask using the top right button.");
@@ -44,29 +48,46 @@ const App = () => {
     getWalletInfo();
     addWalletListener();
   }, []);
+
+  const fundButtonClicked = async (value) => {
+    await Fund(value);
+  };
+
   const connectWalletClicked = async (event) => {
-    if (!walletConnected) {
-      event.preventDefault();
-      const walletResponse = await ConnectWallet();
-      setStatus(walletResponse.status);
-      setWallet(walletResponse.address);
-    }
+    event.preventDefault();
+    const walletResponse = await ConnectWallet();
+    setStatus(walletResponse.status);
+    setWallet(walletResponse.address);
     setWalletConnected(true);
   };
   return (
-    <div className="App">
-      <Nav
-        walletAddress={walletAddress}
-        onConnectWallet={connectWalletClicked}
-        status={status}
-      />
-      <Header />
-      {walletConnected ? (
-        <Fund />
-      ) : (
-        "Please connect your metamask account using the button above"
-      )}
-    </div>
+    <Router>
+      <div className="App">
+        <Nav
+          walletAddress={walletAddress}
+          onConnectWallet={connectWalletClicked}
+          status={status}
+        />
+        <Link to="/">Home</Link>
+
+        <Routes>
+          <Route exact path="/" element={<Landing />}></Route>
+          <Route
+            exact
+            path="/fund"
+            element={
+              walletConnected ? (
+                <FundContract onFundButtonClicked={fundButtonClicked} />
+              ) : (
+                "Please connect your metamask wallet using the button above"
+              )
+            }
+          ></Route>
+          <Route exact path="/add-delegator" element={<AddDelegator />}></Route>
+        </Routes>
+        <Link to="/fund">Fund Now!!</Link>
+      </div>
+    </Router>
   );
 };
 

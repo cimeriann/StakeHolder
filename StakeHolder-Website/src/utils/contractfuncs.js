@@ -14,5 +14,5 @@ export const Fund = async (value) => {
     provider.getSigner()
   );
   let fundAmount = ethers.utils.parseEther(value);
-  stakeHolder.Fund({ fundAmount });
+  stakeHolder.fund({ fundAmount });
 };

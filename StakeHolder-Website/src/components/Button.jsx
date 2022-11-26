@@ -1,5 +1,5 @@
 import React from "react";
-import "./ButtonUI.css";
+import "../styles/ButtonUI.css";
 const Button = (props) => {
   return (
     <button

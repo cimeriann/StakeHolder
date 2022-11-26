@@ -1,12 +1,13 @@
 .ui-button {
-  display: block;
+  display: flexbox;
   color: black;
   cursor: pointer;
   margin-left: 0.5rem;
   border: none;
   background-color: #e84142;
   transition: background-color 0.3s ease-in;
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.1rem;
   border-radius: 0.5rem;
-  padding: 0.7rem 1rem;
+  /* padding: 0.7rem 1rem; */
+  height: auto;
 }
