@@ -1,4 +1,3 @@
-export const stakeHolderAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const abi = [
   {
     inputs: [],
@@ -100,6 +99,44 @@ export const abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_funder",
+        type: "address",
+      },
+    ],
+    name: "getAmountStaked",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "_amountStaked",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_index",
+        type: "uint256",
+      },
+    ],
+    name: "getStaker",
+    outputs: [
+      {
+        internalType: "address",
+        name: "funder",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "owner",
     outputs: [
@@ -172,7 +209,14 @@ export const abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     stateMutability: "payable",
     type: "receive",
   },
-]; //hold on for now
+];

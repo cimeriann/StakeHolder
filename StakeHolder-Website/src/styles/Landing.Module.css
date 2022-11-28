@@ -1,0 +1,10 @@
+.landing {
+  align-items: center;
+  margin-top: 2rem;
+  color: #d3d3d3;
+}
+
+.landing > p,
+h1 {
+  color: #9c9c9c;
+}

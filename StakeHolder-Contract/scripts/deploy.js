@@ -12,12 +12,13 @@ async function deploy() {
   const deployedStakeHolderContract = await StakeHolder.deploy();
 
   const transactionReceipt =
-    deployedStakeHolderContract.deployTransaction.wait(2);
+    deployedStakeHolderContract.deployTransaction.wait();
 
   console.log(
     "Successfully deployed StakeHolder at:",
     deployedStakeHolderContract.address
   );
+  console.log(await transactionReceipt);
 }
 module.exports.default = deploy;
 deploy()
