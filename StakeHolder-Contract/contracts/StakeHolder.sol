@@ -20,7 +20,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
 
     uint8 private constant DECIMALS = 18;
     uint256 private constant STAKING_PERIOD = 365 days;
-    uint256 private constant MINIMUM_USD = 100 * (10**DECIMALS);
+    uint256 private constant MINIMUM_AVAX = 1 * (10 ** DECIMALS);
     address public contractOwner;
 
     uint256 public totalStake;
@@ -46,10 +46,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
     event Fund(address sender, uint256 value);
 
     function fund() public payable {
-        require(
-            msg.value.getUsdAmount() >= MINIMUM_USD,
-            "You need to spend more avax"
-        );
+        require(msg.value >= MINIMUM_AVAX, "You need to spend more avax");
         // if (msg.value.getUsdAmount < MINIMUM_USD) revert InsufficientStake();
         stakers.push(msg.sender);
         amountStaked[msg.sender] += msg.value;
@@ -71,6 +68,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
             value: address(this).balance
         }("");
         require(callSuccess, "Call failed");
+        totalStake = 0;
     }
 
     // function addFunder(address _funderAddress, uint256 _amountFunded) internal returns(uint256){
@@ -117,6 +115,7 @@ contract StakeHolder is Ownable, ReentrancyGuard {
                         stakers[i] = stakers[lastIndex];
                     }
                     stakers.pop();
+                    amountStaked[_account] = 0;
                     break;
                 }
 
@@ -131,11 +130,9 @@ contract StakeHolder is Ownable, ReentrancyGuard {
         return stakers[_index];
     }
 
-    function getAmountStaked(address _funder)
-        public
-        view
-        returns (uint256 _amountStaked)
-    {
+    function getAmountStaked(
+        address _funder
+    ) public view returns (uint256 _amountStaked) {
         return amountStaked[_funder];
     }
 
