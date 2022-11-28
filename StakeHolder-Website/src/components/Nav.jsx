@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "./Button";
+import Button from "./UI/Button";
 import styles from "../styles/Nav.module.css";
 
 const Nav = (props) => {
@@ -10,13 +10,22 @@ const Nav = (props) => {
   };
   return (
     <nav className={styles["nav"]}>
-      <div className={`links ${navbarOpen ? "showMenu" : ""}`}>
+      <div>
         <Link to="/" className={styles["logo"]}>
           <img src={"#"} alt="StakeHolder" />
         </Link>
+      </div>
 
-        <button onClick={handleToggle}>{navbarOpen ? "Closed" : "Open"}</button>
-        <p>{props.walletAddress > 0 ? props.status : ""}</p>
+      <div className={`links ${navbarOpen ? "showMenu" : ""}`}>
+        <Link to="/" className={styles["link"]}>
+          Home
+        </Link>
+        <Link to="/fund" className={styles["link"]}>
+          Fund
+        </Link>
+        <Link to="/add-delegator" className={styles["link"]}>
+          Delegate
+        </Link>
       </div>
       <div
         className={`${styles["button"]} ${
@@ -44,19 +53,9 @@ const Nav = (props) => {
       </div>
       <div className={styles["burger"]}>
         {navbarOpen ? (
-          <i
-            className="fas fas-times"
-            onClick={() => {
-              setNavbarOpen((prev) => !prev);
-            }}
-          />
+          <i className="fas fas-times" onClick={handleToggle} />
         ) : (
-          <i
-            className="fas fas-bars"
-            onClick={() => {
-              setNavbarOpen((prev) => !prev);
-            }}
-          />
+          <i className="fas fas-bars" onClick={handleToggle} />
         )}
       </div>
     </nav>

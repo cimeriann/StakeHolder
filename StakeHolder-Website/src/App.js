@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ConnectWallet, { getCurrentConnectedWallet } from "./utils/connect";
 import Landing from "./components/Landing";
 import Nav from "./components/Nav";
-import { FundContract } from "./components/FundContract";
+import { Form } from "./components/Form";
 import { AddDelegator } from "./components/AddDelegator";
-import { Fund } from "./utils/contractfuncs";
+// import { Fund } from "./utils/contractfuncs";
 
 const App = () => {
   const [walletAddress, setWallet] = useState("");
@@ -49,16 +49,14 @@ const App = () => {
     addWalletListener();
   }, []);
 
-  const fundButtonClicked = async (value) => {
-    await Fund(value);
-  };
-
   const connectWalletClicked = async (event) => {
     event.preventDefault();
     const walletResponse = await ConnectWallet();
     setStatus(walletResponse.status);
     setWallet(walletResponse.address);
-    setWalletConnected(true);
+    if (walletResponse.address > 0) {
+      setWalletConnected(true);
+    }
   };
   return (
     <Router>
@@ -68,24 +66,19 @@ const App = () => {
           onConnectWallet={connectWalletClicked}
           status={status}
         />
-        <Link to="/">Home</Link>
 
         <Routes>
           <Route exact path="/" element={<Landing />}></Route>
+          <Route exact path="/add-delegator" element={""}></Route>
           <Route
             exact
             path="/fund"
             element={
-              walletConnected ? (
-                <FundContract onFundButtonClicked={fundButtonClicked} />
-              ) : (
-                "Please connect your metamask wallet using the button above"
-              )
+              <Form isWalletConnected={walletConnected} status={status} />
             }
           ></Route>
           <Route exact path="/add-delegator" element={<AddDelegator />}></Route>
         </Routes>
-        <Link to="/fund">Fund Now!!</Link>
       </div>
     </Router>
   );
