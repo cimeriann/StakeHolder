@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import BN from "bn.js";
+// import BN from "bn.js";
 import { abi } from "../constants/abi";
 import { stakeHolderAddress } from "../constants/constants";
 
