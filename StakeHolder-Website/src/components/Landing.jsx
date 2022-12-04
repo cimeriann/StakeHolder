@@ -3,7 +3,9 @@ import styles from "../styles/Landing.Module.css";
 const Landing = () => {
   return (
     <div className={styles["landing"]}>
-      <h1>A chance to Stake on the Avalanche Chain</h1>
+      <h1 className={styles["landing-header"]}>
+        A chance to Stake on the Avalanche Chain
+      </h1>
     </div>
   );
 };
