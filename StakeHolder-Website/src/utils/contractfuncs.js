@@ -4,6 +4,9 @@ import { abi } from "../constants/abi";
 import { stakeHolderAddress } from "../constants/constants";
 
 export const Fund = async (fundAmount) => {
+  if (fundAmount === "") {
+    alert("Please enter an amount in the text field");
+  }
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   //   const accounts = await window.ethereum.request({
   // method: "eth_requestAccounts",
@@ -22,8 +25,26 @@ export const Fund = async (fundAmount) => {
 };
 
 export const Withdraw = async () => {
-  console.log("clicked");
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const stakeHolder = new ethers.Contract(stakeHolderAddress, abi, signer);
+  const response = {
+    success: `✅Successfully withdrawn from StakeHolder`,
+    failed: `❌ Failed to withdraw`,
+  };
+  try {
+    const txHash = await stakeHolder.withdraw();
+    const txTest = await provider.getTransaction(txHash);
+    if (txTest) {
+      return response.success;
+      console.log(txTest);
+    }
+  } catch (err) {
+    alert(err);
+  }
 };
+
 function listenForTransactionMine(transactionResponse, provider) {
   console.log(`Mining ${transactionResponse.hash}`);
   return new Promise((resolve, reject) => {

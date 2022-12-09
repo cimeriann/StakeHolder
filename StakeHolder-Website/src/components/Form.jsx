@@ -1,17 +1,23 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { Fund, Withdraw } from "../utils/contractfuncs";
+import { contractOwner } from "../constants/constants";
 import Button from "./UI/Button";
 import Input from "./UI/Input";
+
+const getWalletDetails = async () => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const obj = {
+    signer: signer,
+    provider: provider,
+  };
+  return obj;
+};
+const wallet = getWalletDetails();
 export const Form = (props) => {
   const [fundAmount, setFundAmount] = useState("");
-  // useEffect(() => {
-  //   setFundAmount(_fundAmount);
-  // });
-  // let _fundAmount;
-  // const handleChange = ;
-  const resetFundAmount = () => {
-    setFundAmount("");
-  };
   const onWithdrawClicked = async (e) => {
     try {
       await Withdraw();
@@ -24,10 +30,9 @@ export const Form = (props) => {
 
     const txHash = await Fund(fundAmount);
     console.log(txHash);
-    if (txHash.success) {
-      resetFundAmount();
-      console.log("success");
-    }
+    //   if (txHash.success) {
+    //     console.log("success");
+    //   }
   };
 
   return (
@@ -50,15 +55,21 @@ export const Form = (props) => {
       >
         Fund Me
       </Button>
-      <Button
-        onClick={async (e) => {
-          if (props.isWalletConnected) {
-            onWithdrawClicked(e);
-          } else {
-            alert("You have to connect your wallet");
-          }
-        }}
-      ></Button>
+      {wallet.signer === contractOwner ? (
+        <Button
+          onClick={async (e) => {
+            if (props.isWalletConnected) {
+              onWithdrawClicked(e);
+            } else {
+              alert("You have to connect your wallet");
+            }
+          }}
+        >
+          Withdraw
+        </Button>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
