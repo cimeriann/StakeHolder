@@ -22,7 +22,7 @@
 .ex-link {
   display: inline-block;
   margin: 0 1rem;
-  color: #d3d3d3;
+  color: /*#d3d3d3*/ black;
   text-decoration: none;
   transition: 0.2s all ease-in;
 }
