@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "../styles/Landing.Module.css";
-import Button from "./UI/Button";
+import styles from "../../styles/Landing.Module.css";
+import Button from "../UI/Button";
 const Landing = () => {
   return (
     <div className={styles["landing"]}>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Fund, Withdraw } from "../utils/contractfuncs";
-import { contractOwner } from "../constants/constants";
-import Button from "./UI/Button";
-import Input from "./UI/Input";
+import { Fund, Withdraw } from "../../utils/contractfuncs";
+import { contractOwner } from "../../constants/constants";
+import Button from "../UI/Button";
+import Input from "../UI/Input";
 
 export const Form = (props) => {
   const owner = contractOwner;
@@ -71,7 +71,7 @@ export const Form = (props) => {
               onWithdrawClicked(e);
             } else {
               alert("You have to connect your wallet");
-            }                                                                       
+            }
           }}
         >
           Withdraw

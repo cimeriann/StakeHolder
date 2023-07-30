@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ConnectWallet, { getCurrentConnectedWallet } from "./utils/connect";
-import Landing from "./components/Landing";
+import Landing from "./components/Dashboard/Landing";
 import Nav from "./components/Nav";
-import { Form } from "./components/Form";
-import { AddDelegator } from "./components/AddDelegator";
+import { Form } from "./components/Dashboard/Form";
+import { AddDelegator } from "./components/extras/AddDelegator";
 // import { Fund } from "./utils/contractfuncs";
 
 const App = () => {
