@@ -38,7 +38,6 @@ export const Withdraw = async () => {
     const txTest = await provider.getTransaction(txHash);
     if (txTest) {
       return response.success;
-      console.log(txTest);
     }
   } catch (err) {
     alert(err);

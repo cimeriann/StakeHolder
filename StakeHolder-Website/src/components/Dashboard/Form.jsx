@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Fund, Withdraw } from "../utils/contractfuncs";
-import { contractOwner } from "../constants/constants";
-import Button from "./UI/Button";
-import Input from "./UI/Input";
+import { Fund, Withdraw } from "../../utils/contractfuncs";
+import { contractOwner } from "../../constants/constants";
+import Button from "../UI/Button";
+import Input from "../UI/Input";
 
-const getWalletDetails = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const signer = provider.getSigner();
-  const obj = {
-    signer: signer,
-    provider: provider,
-  };
-  return obj;
-};
-const wallet = getWalletDetails();
 export const Form = (props) => {
+  const owner = contractOwner;
   const [fundAmount, setFundAmount] = useState("");
+  const [renderWithdraw, setRenderWithdraw] = useState(false);
+  const getWalletDetails = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const obj = {
+      signer: signer,
+      provider: provider,
+    };
+    return obj;
+  };
+  const wallet = getWalletDetails();
+
+  useEffect(() => {
+    if (wallet.address === owner) {
+      setRenderWithdraw(true);
+    }
+  }, [wallet.address, owner]);
+
   const onWithdrawClicked = async (e) => {
     try {
       await Withdraw();
