@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ConnectWallet, { getCurrentConnectedWallet } from "./utils/connect";
 import Landing from "./components/Dashboard/Landing";
 import Nav from "./components/Nav";
@@ -68,7 +68,7 @@ const App = () => {
         />
 
         <Routes>
-          <Route exact path="/" element={<Landing />}></Route>
+          <Route exact path="/dashboard" element={<Landing />}></Route>
           <Route exact path="/add-delegator" element={""}></Route>
           <Route
             exact

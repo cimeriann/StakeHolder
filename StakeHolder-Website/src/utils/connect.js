@@ -15,7 +15,7 @@ export const ConnectWallet = async () => {
         status: err.message,
       };
     }
-  } else {
+  } else { 
     return {
       address: "",
       status: (

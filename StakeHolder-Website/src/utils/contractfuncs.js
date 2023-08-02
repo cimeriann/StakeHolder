@@ -4,6 +4,10 @@ import { abi } from "../constants/abi";
 import { stakeHolderAddress } from "../constants/constants";
 
 export const Fund = async (fundAmount) => {
+  const response = {
+    success: `✅Successfully funded ${fundAmount} to StakeHolder`,
+    failed: `❌ Failed to send funds`,
+  };
   if (fundAmount === "") {
     alert("Please enter an amount in the text field");
   }
@@ -19,8 +23,12 @@ export const Fund = async (fundAmount) => {
   try {
     const txHash = await stakeHolder.fund({ value });
     await listenForTransactionMine(txHash, provider);
+    const txTest = await provider.getTransaction(txHash);
+    if (txTest) {
+      return response.success;
+    }
   } catch (err) {
-    return err;
+    alert(err);
   }
 };
 
